@@ -36,7 +36,11 @@ class ADF4350
 
 
         // powers down the PLL/VCO
-        void powerDown();
+        void powerDown(bool);
+        void setRfPower(int);
+        void setAuxPower(int);
+        void auxEnable(bool);
+        void rfEnable(bool);
 
         // Gets current frequency
         int getFreq();
@@ -45,9 +49,10 @@ class ADF4350
         void setFreq(int);
 
 
+        void update();
     private:
         // Instance variables that hold pinout mapping
-        byte _ssPin
+        byte _ssPin;
 
         // Instance variables for ...
         int _freq, _int, _divider, _refClk, _auxPower, _rfPower;
@@ -59,10 +64,15 @@ class ADF4350
 
 
         // function to write data to register.
+        void setR0();
+        void setR1();
+        void setR2();
+        void setR3();
+        void setR4();
+        void setR5();
         void writeRegister(byte[4]);
 
 
-        void update();
 
 };
  
