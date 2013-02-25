@@ -48,14 +48,18 @@ class ADF4350
         // Sets frequency
         void setFreq(int);
 
+        void setInt(int);
 
+        void getParams();
         void update();
+
+        int _phase;
+        int _freq, _int, _divider, _refClk, _auxPower, _rfPower;
     private:
         // Instance variables that hold pinout mapping
         byte _ssPin;
 
         // Instance variables for ...
-        int _freq, _int, _divider, _refClk, _auxPower, _rfPower;
         bool _powerdown, _auxEnabled, _rfEnabled;
 
         // register values

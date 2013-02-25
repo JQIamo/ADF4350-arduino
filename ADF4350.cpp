@@ -48,6 +48,7 @@ ADF4350::ADF4350(byte ssPin) {
 // Initializes a new ADF4350 object, with refClk (in Mhz), and initial frequency.
 void ADF4350::initialize(int freq, int refClk = 10){
     _refClk = refClk;
+    _phase = 1;
 
     _powerdown = 0;
     _auxEnabled = 0;
@@ -70,6 +71,32 @@ void ADF4350::initialize(int freq, int refClk = 10){
 // gets current frequency setting
 int ADF4350::getFreq(){
     return _freq;
+}
+
+void ADF4350::getParams(){
+    Serial.print(_phase);
+    Serial.print(",");
+    Serial.println(_freq);
+    /*
+    Serial.print(_freq);
+    Serial.print(",");
+    Serial.print(_int);
+    Serial.print(",");
+    Serial.print(_divider);
+    Serial.print(",");
+    Serial.print(_refClk);
+    Serial.print(",");
+    Serial.print(_auxPower);
+    Serial.print(",");
+    Serial.print(_auxEnabled);
+    Serial.print(",");
+    Serial.print(_rfPower);
+    Serial.print(",");
+    Serial.print(_rfEnabled);
+    Serial.print(",");
+    Serial.print(_powerdown);
+    Serial.print(",");
+    */
 }
 
 void ADF4350::setFreq(int freq){
@@ -96,7 +123,8 @@ void ADF4350::setFreq(int freq){
         multiplier = 1;
     }
 
-    _int = _freq*multiplier/10;
+    //_int = _freq*multiplier/10;
+    _int = _freq/10;
     ADF4350::update();
 }
 
@@ -116,6 +144,7 @@ void ADF4350::update(){
     ADF4350::writeRegister(_r2);
     ADF4350::writeRegister(_r1);
     ADF4350::writeRegister(_r0);
+    Serial.println("updated");
 }
 
 
@@ -149,12 +178,12 @@ void ADF4350::setAuxPower(int pow){
 // REGISTER UPDATE FUNCTIONS
 
 void ADF4350::setR0(){
-    unsigned long r0 = (_int << 15);
+    unsigned long r0 = (_int << 15); // sets int value...
     _r0 = { lowByte(r0 >> 24), lowByte(r0 >> 16), lowByte(r0 >> 8), lowByte(r0) };
 }
 
 void ADF4350::setR1(){
-    unsigned long r1 =   (1 << 15) + // phase value = 1
+    unsigned long r1 =   (_phase << 15) + // phase value = 1
             (2 << 3) + // modulus value = 1
              1; // register value
     _r1 = { lowByte(r1 >> 24), lowByte(r1 >> 16), lowByte(r1 >> 8), lowByte(r1) };
@@ -173,16 +202,16 @@ void ADF4350::setR2(){
 }
 
 void ADF4350::setR3(){
-   unsigned long r3 = (150<<3) + 3; // (all zero, except register control value = 3);
+   unsigned long r3 =  3; // (all zero, except register control value = 3);
    _r3 = { lowByte(r3 >> 24), lowByte(r3 >> 16), lowByte(r3 >> 8), lowByte(r3) };
 }
 
 void ADF4350::setR4(){
 
-    unsigned long r4 = (1 << 23) + // fundamental feedback
+    unsigned long r4 = (0 << 23) + // divided/fundamental feedback
         (_divider << 20) +
         (80 << 12) + // band select clock divider
-        (2 << 9) + // vco powerdown = false; MTLD = 1; aux output = divided;
+        (0 << 9) + // vco powerdown = false; MTLD = 1; aux output = divided;
         (_auxEnabled << 8) + // AUX OUTPUT DISABLED
         (_auxPower << 6) + // aux output power = 5dbm
         (_rfEnabled << 5) + // RF OUTPUT ENABLED
