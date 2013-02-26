@@ -50,6 +50,8 @@ class ADF4350
 
         void setInt(int);
 
+        void setFeedbackType(bool);
+
         void getParams();
         void update();
 
@@ -60,7 +62,7 @@ class ADF4350
         byte _ssPin;
 
         // Instance variables for ...
-        bool _powerdown, _auxEnabled, _rfEnabled;
+        bool _powerdown, _auxEnabled, _rfEnabled, _feedbackType;
 
         // register values
         byte _r0[4], _r1[4], _r2[4], _r3[4], _r4[4], _r5[4];

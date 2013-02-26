@@ -50,6 +50,7 @@ void ADF4350::initialize(int freq, int refClk = 10){
     _refClk = refClk;
     _phase = 1;
 
+    _feedbackType = 0;
     _powerdown = 0;
     _auxEnabled = 0;
     _rfEnabled = 1;
@@ -70,6 +71,7 @@ void ADF4350::initialize(int freq, int refClk = 10){
 
 // gets current frequency setting
 int ADF4350::getFreq(){
+    Serial.println(_freq);
     return _freq;
 }
 
@@ -100,9 +102,8 @@ void ADF4350::getParams(){
 }
 
 void ADF4350::setFreq(int freq){
-
     _freq = freq;
-    int multiplier = 1;
+    int multiplier;
 
     // selects the right divider range (ie, output divider is 2^(_divider))
     // the multiplier is required if you're using fundamental feedback to N-counter
@@ -124,7 +125,11 @@ void ADF4350::setFreq(int freq){
     }
 
     //_int = _freq*multiplier/10;
-    _int = _freq/10;
+    if (_feedbackType == 0){
+        _int = _freq/_refClk;
+    } else{
+        _int = _freq*multiplier/_refClk;
+    }
     ADF4350::update();
 }
 
@@ -147,6 +152,9 @@ void ADF4350::update(){
     Serial.println("updated");
 }
 
+void ADF4350::setFeedbackType(bool feedback){
+    _feedbackType = feedback;
+}
 
 void ADF4350::powerDown(bool pd){
     _powerdown = pd;
@@ -208,7 +216,7 @@ void ADF4350::setR3(){
 
 void ADF4350::setR4(){
 
-    unsigned long r4 = (0 << 23) + // divided/fundamental feedback
+    unsigned long r4 = (_feedbackType << 23) + // divided/fundamental feedback
         (_divider << 20) +
         (80 << 12) + // band select clock divider
         (0 << 9) + // vco powerdown = false; MTLD = 1; aux output = divided;
