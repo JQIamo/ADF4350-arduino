@@ -52,7 +52,6 @@ class ADF4350
 
         void setFeedbackType(bool);
 
-        void getParams();
         void update();
 
         int _phase;

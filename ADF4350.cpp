@@ -71,34 +71,7 @@ void ADF4350::initialize(int freq, int refClk = 10){
 
 // gets current frequency setting
 int ADF4350::getFreq(){
-    Serial.println(_freq);
     return _freq;
-}
-
-void ADF4350::getParams(){
-    Serial.print(_phase);
-    Serial.print(",");
-    Serial.println(_freq);
-    /*
-    Serial.print(_freq);
-    Serial.print(",");
-    Serial.print(_int);
-    Serial.print(",");
-    Serial.print(_divider);
-    Serial.print(",");
-    Serial.print(_refClk);
-    Serial.print(",");
-    Serial.print(_auxPower);
-    Serial.print(",");
-    Serial.print(_auxEnabled);
-    Serial.print(",");
-    Serial.print(_rfPower);
-    Serial.print(",");
-    Serial.print(_rfEnabled);
-    Serial.print(",");
-    Serial.print(_powerdown);
-    Serial.print(",");
-    */
 }
 
 void ADF4350::setFreq(int freq){
@@ -124,7 +97,6 @@ void ADF4350::setFreq(int freq){
         multiplier = 1;
     }
 
-    //_int = _freq*multiplier/10;
     if (_feedbackType == 0){
         _int = _freq/_refClk;
     } else{
@@ -149,7 +121,6 @@ void ADF4350::update(){
     ADF4350::writeRegister(_r2);
     ADF4350::writeRegister(_r1);
     ADF4350::writeRegister(_r0);
-    Serial.println("updated");
 }
 
 void ADF4350::setFeedbackType(bool feedback){
@@ -172,6 +143,12 @@ void ADF4350::rfEnable(bool rf){
 // CAREFUL!!!! pow must be 0, 1, 2, or 3... corresponding to -4, -1, 3, 5 dbm.
 void ADF4350::setRfPower(int pow){
     _rfPower = pow;
+    ADF4350::setR4();
+    ADF4350::update();
+}
+
+void ADF4350::auxEnable(bool aux){
+    _auxEnabled = aux;
     ADF4350::setR4();
     ADF4350::update();
 }
@@ -220,8 +197,8 @@ void ADF4350::setR4(){
         (_divider << 20) +
         (80 << 12) + // band select clock divider
         (0 << 9) + // vco powerdown = false; MTLD = 1; aux output = divided;
-        (_auxEnabled << 8) + // AUX OUTPUT DISABLED
-        (_auxPower << 6) + // aux output power = 5dbm
+        (_auxEnabled << 8) + // AUX OUTPUT enable/disable
+        (_auxPower << 6) + // aux output power = {-4, -1, 2, 5dbm}
         (_rfEnabled << 5) + // RF OUTPUT ENABLED
         (_rfPower << 3) + // RF output power = 5dbm
         4;  // register select
