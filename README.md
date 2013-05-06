@@ -14,7 +14,6 @@ In your Arduino sketch, you'll want to include the SPI library in addition to th
     ADF4350 PLL(COM_PIN); // declares object PLL of type ADF4350. Will initialize it below.
 
     void setup(){
-        SPI.begin();
         SPI.begin();          // for communicating with DDS/PLLs
         SPI.setClockDivider(4);
         SPI.setDataMode(SPI_MODE0);
