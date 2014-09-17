@@ -164,15 +164,16 @@ void ADF4350::setAuxPower(int pow){
 
 void ADF4350::setR0(){
     unsigned long r0 = (_int << 15); // sets int value...
-    _r0 = { lowByte(r0 >> 24), lowByte(r0 >> 16), lowByte(r0 >> 8), lowByte(r0) };
+    byte r0Ary[] = { lowByte(r0 >> 24), lowByte(r0 >> 16), lowByte(r0 >> 8), lowByte(r0) };
+    memcpy(&_r0, &r0Ary, sizeof(r0Ary));
 }
 
 void ADF4350::setR1(){
     unsigned long r1 =   (_phase << 15) + // phase value = 1
             (2 << 3) + // modulus value = 1
              1; // register value
-    _r1 = { lowByte(r1 >> 24), lowByte(r1 >> 16), lowByte(r1 >> 8), lowByte(r1) };
-
+    byte r1Ary[] = { lowByte(r1 >> 24), lowByte(r1 >> 16), lowByte(r1 >> 8), lowByte(r1) };
+    memcpy(&_r1, &r1Ary, sizeof(r1Ary));
 }
 
 void ADF4350::setR2(){
@@ -182,13 +183,15 @@ void ADF4350::setR2(){
             (5 << 6) +  // digital lock detect + polarity
             (_powerdown << 5) +   // powerdown 0 = false; 1 = true
             2; // register value
-
-    _r2 = { lowByte(r2 >> 24), lowByte(r2 >> 16), lowByte(r2 >> 8), lowByte(r2) };
+    
+    byte r2Ary[] =  { lowByte(r2 >> 24), lowByte(r2 >> 16), lowByte(r2 >> 8), lowByte(r2) };
+    memcpy(&_r2, &r2Ary, sizeof(r2Ary));
 }
 
 void ADF4350::setR3(){
    unsigned long r3 =  3; // (all zero, except register control value = 3);
-   _r3 = { lowByte(r3 >> 24), lowByte(r3 >> 16), lowByte(r3 >> 8), lowByte(r3) };
+   byte r3Ary[] = { lowByte(r3 >> 24), lowByte(r3 >> 16), lowByte(r3 >> 8), lowByte(r3) };
+   memcpy(&_r3, &r3Ary, sizeof(&r3Ary));
 }
 
 void ADF4350::setR4(){
@@ -203,7 +206,8 @@ void ADF4350::setR4(){
         (_rfPower << 3) + // RF output power = 5dbm
         4;  // register select
 
-   _r4 = { lowByte(r4 >> 24), lowByte(r4 >> 16), lowByte(r4 >> 8), lowByte(r4) };
+   byte r4Ary[] = { lowByte(r4 >> 24), lowByte(r4 >> 16), lowByte(r4 >> 8), lowByte(r4) };
+   memcpy(&_r4, &r4Ary, sizeof(r4Ary));
 
 
 }
@@ -211,7 +215,8 @@ void ADF4350::setR4(){
 void ADF4350::setR5(){
 
     unsigned long r5 = (1 << 22) + (3<<19) + 5; // lock detect pin mode = digital lock detect
-   _r5 = { lowByte(r5 >> 24), lowByte(r5 >> 16), lowByte(r5 >> 8), lowByte(r5) };
+   byte r5Ary[] = { lowByte(r5 >> 24), lowByte(r5 >> 16), lowByte(r5 >> 8), lowByte(r5) };
+   memcpy(&_r5, &r5Ary, sizeof(r5Ary));
 
 }
 // Writes SPI to particular register.
