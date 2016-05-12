@@ -54,8 +54,8 @@ class ADF4350
 
         void update();
 
-        int _phase;
-        int _freq, _int, _divider, _refClk, _auxPower, _rfPower;
+        unsigned long _phase;
+        unsigned long _freq, _int, _divider, _refClk, _auxPower, _rfPower;
     private:
         // Instance variables that hold pinout mapping
         byte _ssPin;
