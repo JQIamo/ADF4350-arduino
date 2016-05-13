@@ -191,7 +191,7 @@ void ADF4350::setR2(){
 void ADF4350::setR3(){
    unsigned long r3 =  3; // (all zero, except register control value = 3);
    byte r3Ary[] = { lowByte(r3 >> 24), lowByte(r3 >> 16), lowByte(r3 >> 8), lowByte(r3) };
-   memcpy(&_r3, &r3Ary, sizeof(&r3Ary));
+   memcpy(&_r3, &r3Ary, sizeof(r3Ary));
 }
 
 void ADF4350::setR4(){
