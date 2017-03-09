@@ -26,6 +26,10 @@ In your Arduino sketch, you'll want to include the SPI library in addition to th
     }
 
 
+### Important note
+
+The ADF4350 works with 3.3V logic levels, not 5V. Be careful if you're using an Arduino Uno or similar!
+
 ## Implemented features
 
 Self-explanatory functions...
